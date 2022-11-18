@@ -163,16 +163,16 @@ input:focus{
     /*overflow:hidden;*/
 }
 .category_bar{
-    width:1064.88px;
     margin-left: 240px;
     position: sticky;
+    display: flex;
+    justify-content: center;
+    flex-wrap: nowrap;
     top:56px;
     height:56px;
-    text-align: center;
-    background-color: white;
+    background-color:white;
 }
 .category_bar_content{
-    display: inline-block;
 }
 .category_bar button{
     height: 32px;
