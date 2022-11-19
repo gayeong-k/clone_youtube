@@ -2,52 +2,33 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name ="google-signin-scope" content="profile email">
         <meta name ="google-signin-client_id" content="794784968422-06mn8m5sdsqu9hfr3iiqs013696jhptn.apps.googleusercontent.com">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
         <title>logIn</title>
     </head>
     <body>
-        <ul>
-            <li id="GgCustomLogin">
-                <a href="javascript:void(0)">
-                    <span>Login with Google</span> 
-                </a>
-            </li>
-        </ul>
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
         <script>
-        function init(){
-            gapi.load('auth2',function(){ //브라우저가 구글 계정이 로그인 되어있는지를 확인
-                gapi.auth2.init(); //GoogleAuth 개체 초기화
-                options=new gapi.auth2.SigninOptionsBuilder();
-                options.setPrompt('select_account');
-                options.setScope('email profile openid https://www.googleapis.com/auth/user.birthday.read');
-                gapi.auth2.getAuthInstance().attachClickHandler('GgCustomLogin', options, onSignIn,onSignInFailure);
-            })
-        }
-        function onSignIn(googleUser){
-            var access_token=googleUser.getAuthResponse().access_token
-            $.ajax({
-                //people api 이용하여 프로필 및 생년월일에 대한 선택 동의후 가져온다.
-                url : 'https://people.googleapis.com/v1/people/me'
-                ,data: {personFields:'birthdays',key:'AIzaSyDkXr9B1q6vhjXW10B-6aUOpDwUjIXptwo','access_token':access_token}
-                ,method: 'GET'
-            })
-            .done(function(e){
-                //요청 성공시 프로필 가져오기
+            function onSignIn(googleUser) {
                 var profile = googleUser.getBasicProfile();
-                console.log('프로필',profile);
-            })
-            .fail(function(e){
-                //요청 실패 
-                console.log(e);
-            })
-        }
-        function onSignInFailure(t){
-            console.log(t);
-        }
+                console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+                console.log('Name: ' + profile.getName());
+                console.log('Image URL: ' + profile.getImageUrl());
+                console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+           
+                var id_token=googleUser.getAuthResponse().id_token;
+                console.log("ID token: "+id_token);
+            }
         </script>
-        <!--구글 api 사용을 위한 스크립트-->
-        <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
+        <a href="#" onclick="signOut();">Sign out</a>
+        <script>
+          function signOut() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+              console.log('User signed out.');
+            });
+          }
+        </script>
     </body>
 </html>
